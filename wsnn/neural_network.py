@@ -18,7 +18,6 @@ class NeuralNetwork(object):
 
     def cost(self, data_point: DataPoint) -> float:
         outputs = self.calculate_outputs(data_point.inputs)
-        # output_layer = self.layers[-1]
         cost = 0.0
 
         for node_out in range(len(outputs)):
