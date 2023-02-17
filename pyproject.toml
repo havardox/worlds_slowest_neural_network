@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "doodle_classifier"
+name = "wsnn"
 version = "0.1.0"
 description = ""
 authors = ["Havardox <harald.varner@gmail.com>"]

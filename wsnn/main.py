@@ -8,8 +8,8 @@ from pathlib import Path
 
 matplotlib.use("TkAgg")
 
-from doodle_classifier.neural_network import NeuralNetwork
-from doodle_classifier.data import DataPoint
+from wsnn.neural_network import NeuralNetwork
+from wsnn.data import DataPoint
 
 
 def main():
