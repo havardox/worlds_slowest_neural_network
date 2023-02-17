@@ -1,6 +1,6 @@
 from typing import Sequence
 from wsnn.data import DataPoint
-from wsnn.doodle_classifier.layer import Layer
+from wsnn.layer import Layer
 import pickle
 
 
