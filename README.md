@@ -6,4 +6,4 @@ Side note: please do not use in production.
 
 <h2>WSNN's official mascot</h2>
 
-![download (4)](https://user-images.githubusercontent.com/19144650/219682778-b90ac887-6bcf-47a8-a714-629ee08dde5a.png)
+![7bis2w](https://user-images.githubusercontent.com/19144650/219683732-3fcae5de-f98d-4486-923f-ad6d73adf78d.jpg)
