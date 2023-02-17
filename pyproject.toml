@@ -6,16 +6,12 @@ authors = ["Havardox <harald.varner@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.10"
-numpy = "^1.24.2"
 matplotlib = "^3.6.3"
-mpl-scatter-density = "^0.7"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
 black = "^23.1.0"
 flake8 = "^6.0.0"
-jupyter = "^1.0.0"
-notebook = "^6.5.2"
 mypy = "^1.0.0"
 
 [build-system]
