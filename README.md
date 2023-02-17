@@ -2,7 +2,7 @@
 
 raw python babyyyyyyyyy
 
-Side note: please do not use in production.
+Side note: please do not use this in production.
 
 <h2>WSNN's official mascot</h2>
 
