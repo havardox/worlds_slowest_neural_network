@@ -38,7 +38,6 @@ class Layer(object):
     def weights(self) -> list[list[float]]:
         return self._weights
 
-    # a setter function
     @weights.setter
     def weights(self, v: list[list[float]]) -> None:
         if len(v) != self.num_nodes_in:
@@ -51,7 +50,6 @@ class Layer(object):
     def biases(self) -> list[float]:
         return self._biases
 
-    # a setter functionin enumerate
     @biases.setter
     def biases(self, v: list[float]) -> None:
         if len(v) != self.num_nodes_out:
