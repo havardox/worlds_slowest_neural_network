@@ -1,10 +1,14 @@
-from tkinter import Tk, Label, Button, RIGHT, BOTH
+import tkinter as tk
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
+from matplotlib.animation import Animation
+from matplotlib import style
+import matplotlib.pyplot as plt
 import matplotlib
 import random
 import pickle
 from pathlib import Path
+from PIL import Image, ImageTk
 
 matplotlib.use("TkAgg")
 
@@ -45,43 +49,71 @@ def main():
 
     class MyWindow:
         def __init__(self, win):
-            self.win = win
-            x0, y0 = 40, 50
-            self.lbl0_tmpl = "Cost: {cost}"
-            self.lbl0 = Label(win, text=self.lbl0_tmpl.format(cost=15))
-            self.lbl0.config(font=("Arial", 14))
-            self.lbl0.place(x=x0, y=y0)
+            # <a href="https://www.freepik.com/free-vector/realistic-carbon-fiber-texture-3d-background_17820231.htm#query=carbon%20pattern&position=0&from_view=keyword&track=ais">Image by starline</a> on Freepik
+            self.bgimg = Image.open(
+                "SL-092619-23740-39.jpg"
+            )  # load the background image
+            self.background_lbl = tk.Label(win)
+            self.background_lbl.place(
+                x=0, y=0, relwidth=1, relheight=1
+            )  # make label l to fit the parent window always
+            self.background_lbl.bind(
+                "<Configure>", self.on_resize
+            )  # on_resize will be executed whenever label l is resized
 
-            # ---- Train button -------
-            self.btn1 = Button(win, text="Train!", width=15, height=1)
-            self.btn1.pack(side="left", anchor="e", expand=True)
-            self.btn1.bind("<Button-1>", lambda event: self.start_training())
+            tk.Label(win).grid(row=0, column=0)
 
-            # ---- Show plot button -------
-            self.btn2 = Button(win, text="Plot current data", width=15, height=1)
-            self.btn2.pack(side="left", anchor="w", expand=True)
-            self.btn2.bind("<Button-1>", self.plot)
+            # Create left and right frames
+            left_frame = tk.Frame(win)
+            left_frame.grid(row=0, padx=10, pady=5, column=0)
 
-            # ---- Print outputs button -------
-            self.btn3 = Button(win, text="Print outputs", width=15, height=1)
-            self.btn3.pack(side="left", anchor="s", expand=True)
-            self.btn3.bind("<Button-1>", self.print_outputs)
+            right_frame = tk.Frame(win)
+            right_frame.grid(row=0, column=1, sticky="nsew")
+
+            tk.Label(right_frame, width=50).grid(padx=5, pady=5)
+
+            tool_bar = tk.Frame(left_frame, width=180, height=185)
+            tool_bar.grid(padx=5, pady=5)
+
+            # For now, when the buttons are clicked, they only call the self.clicked() method. We will add functionality later.
+            tk.Button(tool_bar, text="Train", command=self.clicked).grid(
+                row=1, column=0, padx=5, pady=5, sticky="w" + "e" + "n" + "s"
+            )
+            tk.Button(
+                tool_bar, text="Show current inference", command=self.clicked
+            ).grid(row=2, column=0, padx=5, pady=5, sticky="w" + "e" + "n" + "s")
+            tk.Button(
+                tool_bar, text="Print output to console", command=self.clicked
+            ).grid(row=3, column=0, padx=5, pady=5, sticky="w" + "e" + "n" + "s")
 
             # ---- Figure -------
-            self.figure = Figure(figsize=(4.5, 3), dpi=100)
+            fig, (ax1, ax2) = plt.subplots(2)
+            fig.set_figheight(5)
+            fig.set_figwidth(5)
+            fig.suptitle('Vertically stacked subplots')
 
             # ---- Subplot 1 -------
-            self.subplot1 = self.figure.add_subplot(111)
             self.cmap = matplotlib.colors.ListedColormap(["red", "blue"])
             bounds = [0, 1]
             self.norm = matplotlib.colors.BoundaryNorm(bounds, self.cmap.N)
-            self.subplot1.grid(True)
-            self.subplot1.set_xlim(0, 100)
-            self.subplot1.set_ylim(0, 100)
+            ax1.grid(True)
+            ax1.set_xlim(0, 100)
+            ax1.set_ylim(0, 100)
+            self.plots = FigureCanvasTkAgg(fig, right_frame)
+            self.plots.get_tk_widget().grid(row=0, column=0, padx=5, pady=5)
 
-            # ---- Show the plot-------
-            self.plots = FigureCanvasTkAgg(self.figure, win)
-            self.plots.get_tk_widget().pack(side=RIGHT, fill=BOTH, expand=0)
+        def clicked(event):
+            """if button is clicked, display message"""
+            print("Clicked.")
+
+        def on_resize(self, event):
+            # resize the background image to the size of label
+            image = self.bgimg.resize(
+                (event.width, event.height), Image.Resampling.LANCZOS
+            )
+            # update the image of the label
+            self.background_lbl.image = ImageTk.PhotoImage(image)
+            self.background_lbl.config(image=self.background_lbl.image)
 
         def data(self):
             unselected_inputs = [[], [], []]
@@ -131,10 +163,13 @@ def main():
             )
             self.plots.draw()
 
-    window = Tk()
+    window = tk.Tk()
     MyWindow(window)
+    window.grid_rowconfigure(0, weight=1)
+    window.grid_columnconfigure(0, weight=1)
+    window.geometry("800x600")
     window.title("My neural network")
-    window.geometry("800x600+10+10")
+    window.maxsize(1200, 900)  # width x height
     window.mainloop()
 
 
