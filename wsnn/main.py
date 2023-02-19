@@ -1,7 +1,7 @@
 import tkinter as tk
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.animation import Animation
-from collections import deque
+import queue
 import matplotlib.pyplot as plt
 import matplotlib
 import random
@@ -45,27 +45,29 @@ class MyWindow:
         right_frame = tk.Frame(win)
         right_frame.grid(row=0, column=1, sticky="nsew")
 
-        tool_bar = tk.Frame(left_frame, width=180, height=185)
-        tool_bar.grid(padx=5, pady=5)
+        toolbar = tk.Frame(left_frame, width=180, height=185)
+        toolbar.grid(padx=5, pady=5)
 
-        self._training_queue = deque(maxlen=1)
-        self._training = threading.Event()
+        self._training_queue = queue.Queue(maxsize=1)
+        self._is_training_event = threading.Event()
+        self._train_poll_interval = 250
+        self.win.wm_protocol("WM_DELETE_WINDOW", self.cleanup_on_exit)
         self._update_label_task = None
 
         # ---- Buttons -------
-        self.train_btn = tk.Button(tool_bar, text="Train")
+        self.train_btn = tk.Button(toolbar, text="Train")
         self.train_btn.grid(
             row=1, column=0, padx=5, pady=5, sticky="w" + "e" + "n" + "s"
         )
         self.train_btn.bind("<Button-1>", self.train_btn_pressed)
 
-        show_output_btn = tk.Button(tool_bar, text="Show current output")
+        show_output_btn = tk.Button(toolbar, text="Show current output")
         show_output_btn.grid(
             row=2, column=0, padx=5, pady=5, sticky="w" + "e" + "n" + "s"
         )
         show_output_btn.bind("<Button-1>", self.plot)
 
-        print_output_btn = tk.Button(tool_bar, text="Print output to console")
+        print_output_btn = tk.Button(toolbar, text="Print output to console")
         print_output_btn.grid(
             row=3, column=0, padx=5, pady=5, sticky="w" + "e" + "n" + "s"
         )
@@ -91,10 +93,17 @@ class MyWindow:
         self.plots.get_tk_widget().grid(row=0, column=0, padx=5, pady=5)
 
         self.label_txt = "Cost: {cost}"
+        cost = self.network.cost_multiple(self.train_data)
         self.cost_label = tk.Label(
-            right_frame, anchor="w", text=self.label_txt.format(cost=1), width=50
+            right_frame, anchor="w", text=self.label_txt.format(cost=cost), width=50
         )
         self.cost_label.grid(row=1, padx=5, pady=5, column=0, sticky="w")
+
+    def cleanup_on_exit(self):
+        """Needed to shutdown the polling thread."""
+        print("Window closed. Cleaning up and quitting")
+        self._is_training_event.clear()
+        self.win.quit()  # Allow the rest of the quit process to continue
 
     def on_resize(self, event):
         # resize the background image to the size of label
@@ -115,46 +124,48 @@ class MyWindow:
             output_list[0].append(data_point.inputs[0])
             output_list[1].append(data_point.inputs[1])
             output_list[2].append(classify)
-        cost = self.network.cost_multiple(self.train_data)
-        return unselected_inputs, selected_inputs, cost
+        return unselected_inputs, selected_inputs
 
     def train_btn_pressed(self, event):
-        if self._training.is_set():
-            self.win.after_cancel(self._update_label_task)
-            self._update_label_task = None
-            self._training.clear()
-            self.train_thread.join()
+        if self._is_training_event.is_set():
+            self._is_training_event.clear()
+            self._training_thread.join()
+            self.win.after_cancel(self._update_label_job_id)
+            self._update_label_job_id = None
             self.train_btn.config(text="Start training")
         else:
-            self._training.set()
+            self._is_training_event.set()
             self.train_btn.config(text="Stop training")
 
-            self.train_thread = threading.Thread( target=self.train)
-            self.train_thread.daemon = True
-            self.train_thread.start()
-            self.update_label()
+            self._training_thread = threading.Thread(target=self.train, name="Thread")
+            self._training_thread.daemon = True
+            self._training_thread.start()
+            self.update_cost_label_periodic()
 
     def train(self):
-        while self._training.is_set():
+        while self._is_training_event.is_set():
             self.network.learn(self.train_data, learn_rate=0.6)
             cost = self.network.cost_multiple(self.train_data)
             self.network.save_weights_and_biases(cost)
-            self._training_queue.appendleft(cost)
+            self._training_queue.put(cost)
 
-    def update_label(self):
-        try:
-            cost = self._training_queue[0]
-        except IndexError:
-            cost = 1
+    def update_cost_label(self, cost: float):
         self.cost_label.config(text=self.label_txt.format(cost=cost))
-        self._update_label_task = self.win.after(ms=100, func=self.update_label)
+
+    def update_cost_label_periodic(self):
+        if not self._training_queue.empty():
+            cost = self._training_queue.get()
+            self.update_cost_label(cost=cost)
+        self._update_label_job_id = self.win.after(
+            self._train_poll_interval, func=self.update_cost_label_periodic
+        )
 
     def print_outputs(self, event):
         for data_point in self.train_data[:10]:
             print(self.network.layers[0].calculate_outputs(data_point.inputs))
 
     def plot(self, event):
-        unselected_inputs, selected_inputs, cost = self.data()
+        unselected_inputs, selected_inputs = self.data()
         self.subplot1.clear()
         self.subplot1.scatter(
             unselected_inputs[0],
@@ -171,22 +182,14 @@ class MyWindow:
             norm=self.norm,
             edgecolors="black",
         )
+        cost = self.network.cost_multiple(self.train_data)
         self.cost_label.config(text=self.label_txt.format(cost=cost))
         self.plots.draw()
 
 
 def main():
     random.seed(1)
-    train_path = Path("train.pkl")
-    if train_path.exists():
-        with open(train_path, "rb") as f:
-            network = pickle.load(f)
-    else:
-        network = NeuralNetwork(layer_sizes=[2, 9, 9, 9, 2])
-        print(network.layers)
 
-        for layer in network.layers:
-            layer.initalize_random_weights()
     train_data = [
         DataPoint(
             inputs=[random.uniform(2, 25) for _ in range(2)],
@@ -205,6 +208,16 @@ def main():
             for _ in range(300)
         ]
     )
+
+    train_path = Path("train.pkl")
+    if train_path.exists():
+        with open(train_path, "rb") as f:
+            network = pickle.load(f)
+    else:
+        network = NeuralNetwork(layer_sizes=[2, 9, 9, 9, 2])
+
+        for layer in network.layers:
+            layer.initalize_random_weights()
 
     window = tk.Tk()
     MyWindow(window, network=network, train_data=train_data)

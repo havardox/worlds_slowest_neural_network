@@ -8,6 +8,7 @@ authors = ["Havardox <harald.varner@gmail.com>"]
 python = "^3.10"
 matplotlib = "^3.6.3"
 Pillow = "^9.4.0"
+types-Pillow = "^9.4.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
