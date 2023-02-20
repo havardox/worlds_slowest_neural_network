@@ -137,8 +137,7 @@ class MyWindow:
             self._is_training_event.set()
             self.train_btn.config(text="Stop training")
 
-            self._training_thread = threading.Thread(target=self.train, name="Thread")
-            self._training_thread.daemon = True
+            self._training_thread = threading.Thread(target=self.train, daemon=True)
             self._training_thread.start()
             self.update_cost_label_periodic()
 
@@ -153,7 +152,7 @@ class MyWindow:
         self.cost_label.config(text=self.label_txt.format(cost=cost))
 
     def update_cost_label_periodic(self):
-        if not self._training_queue.empty():
+        while self._training_queue.qsize():
             cost = self._training_queue.get()
             self.update_cost_label(cost=cost)
         self._update_label_job_id = self.win.after(
