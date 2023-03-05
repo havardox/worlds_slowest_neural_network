@@ -39,9 +39,35 @@ class NeuralNetwork(object):
         outputs = self.calculate_outputs(inputs)
         return outputs.index(max(outputs))
 
+    def update_all_gradients(self, data_point: DataPoint):
+        self.calculate_outputs(data_point.inputs)
+
+        output_layer = self.layers[-1]
+        node_values = output_layer.calculate_output_layer_node_values(
+            data_point.expected_outputs
+        )
+        output_layer.update_gradients(node_values)
+
+        # hidden_layer = self.layers[-2]
+        # node_values = hidden_layer.calculate_hidden_layer_node_values(output_layer, node_values)
+        # hidden_layer.update_gradients(node_values)
+
+        for hidden_layer_index in range(
+            len(self.layers) - 2, -1, -1
+        ):
+            hidden_layer = self.layers[hidden_layer_index]
+            node_values = hidden_layer.calculate_hidden_layer_node_values(
+                self.layers[hidden_layer_index + 1], node_values
+            )
+            hidden_layer.update_gradients(node_values)
+
     def apply_all_gradients(self, learn_rate: float):
         for layer in self.layers:
             layer.apply_gradients(learn_rate)
+
+    def clear_all_gradients(self):
+        for layer in self.layers:
+            layer.clear_gradients()
 
     def save_weights_and_biases(self, cost: float):
         if cost < self.lowest_cost:
@@ -49,21 +75,29 @@ class NeuralNetwork(object):
                 pickle.dump(self, f, pickle.HIGHEST_PROTOCOL)
             self.lowest_cost = cost
 
-    def learn(self, training_data: Sequence[DataPoint], learn_rate: float):
-        h = 0.0001
-        original_cost = self.cost_multiple(training_data)
-        for layer in self.layers:
-            for node_out in range(layer.num_nodes_out):
-                for node_in in range(layer.num_nodes_in):
-                    layer.weights[node_in][node_out] += h
-                    delta_cost = self.cost_multiple(training_data) - original_cost
-                    layer.weights[node_in][node_out] -= h
-                    layer.cost_gradients_W[node_in][node_out] = delta_cost / h
+    def learn(self, training_batch: Sequence[DataPoint], learn_rate: float):
+        # h = 0.0001
+        # original_cost = self.cost_multiple(training_data)
+        # for layer in self.layers:
+        #     for node_out in range(layer.num_nodes_out):
+        #         for node_in in range(layer.num_nodes_in):
+        #             layer.weights[node_in][node_out] += h
+        #             delta_cost = self.cost_multiple(training_data) - original_cost
+        #             layer.weights[node_in][node_out] -= h
+        #             layer.cost_gradients_W[node_in][node_out] = delta_cost / h
 
-            for bias_index in range(len(layer.biases)):
-                layer.biases[bias_index] += h
-                delta_cost = self.cost_multiple(training_data) - original_cost
-                layer.biases[bias_index] -= h
-                layer.cost_gradients_B[bias_index] = delta_cost / h
+        #     for bias_index in range(len(layer.biases)):
+        #         layer.biases[bias_index] += h
+        #         delta_cost = self.cost_multiple(training_data) - original_cost
+        #         layer.biases[bias_index] -= h
+        #         layer.cost_gradients_B[bias_index] = delta_cost / h
 
-        self.apply_all_gradients(learn_rate)
+        # self.apply_all_gradients(learn_rate)
+
+        for data_point in training_batch:
+            self.update_all_gradients(data_point)
+
+        self.apply_all_gradients(learn_rate / len(training_batch))
+
+        # Reset all gradients to zero to be ready for the next training batch
+        self.clear_all_gradients()
