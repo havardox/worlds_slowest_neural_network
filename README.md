@@ -1,9 +1,7 @@
-# WSNN - World's Slowest Neural Network
+# WSNN - World's ~~Slowest~~Speediest Neural Network
 
-raw python babyyyyyyyyy
+![image](https://user-images.githubusercontent.com/19144650/222975537-6399ac67-ef45-48c3-97da-b6af9452cb33.png)
 
-Side note: please do not use this in production.
+Wait, I thought this was the slowest network?
 
-<h2>WSNN's official mascot</h2>
-
-![7bis7h](https://user-images.githubusercontent.com/19144650/219683917-1c7352cf-571a-4f0b-9679-1db4af6f72f3.jpg)
+Well, I lied.
