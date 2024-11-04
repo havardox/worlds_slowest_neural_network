@@ -144,7 +144,7 @@ class MyWindow:
 
     def train(self):
         while self._is_training_event.is_set():
-            self.network.learn(self.train_data, learn_rate=0.6)
+            self.network.learn(self.train_data, learn_rate=0.001)
             cost = self.network.cost_multiple(self.train_data)
             self.network.save_weights_and_biases(cost)
             self._training_queue.put(cost)
