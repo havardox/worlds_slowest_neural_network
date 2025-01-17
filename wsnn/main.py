@@ -224,7 +224,7 @@ def main():
     window.grid_rowconfigure(0, weight=1)
     window.grid_columnconfigure(0, weight=1)
     window.geometry("800x600")
-    window.title("My neural network")
+    window.title("WSNN")
     window.maxsize(1200, 900)  # width x height
     window.mainloop()
 
