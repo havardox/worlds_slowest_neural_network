@@ -9,13 +9,13 @@ Side note: please do not use this in production.
 
 (Run the below commands from your project directory)
 
-2\. `python -m venv venv`
+2\. `git clone https://github.com/havardox/worlds_slowest_neural_network.git
 
-3\. Unix/MacOS: `source venv/bin/activate`
+3\. `python -m venv venv`
+
+4\. Unix/MacOS: `source venv/bin/activate`
 
 &emsp;Windows: `venv\Scripts\activate`
-
-4\. `pip install git+https://github.com/havardox/Marciplier.git`
 
 5\. `python main.py`
 
