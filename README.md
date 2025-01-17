@@ -21,7 +21,7 @@ Depending on your OS, the `python` command may be called `py` or `python3`.
 
 6\. `python main.py`
 
-7\- Click "Start training"
+7\- Click "Train"
 
 After a really really REALLY long time, the neural network correctly paints the target labels blue (The dots with the black borders). 
 Thus, the neural network has been correctly trained to color the targets on the given XY graph of randomly generated points.
