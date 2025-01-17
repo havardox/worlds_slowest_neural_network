@@ -15,13 +15,17 @@ Side note: please do not use this in production.
 
 &emsp;Windows: `venv\Scripts\activate`
 
+5\. `cd worlds_slowest_neural_network
+
 Depending on your OS, the `python` command may be called `py` or `python3`.
 
-5\. `python -m pip install .`
+6\. `python -m pip install .`
 
-6\. `python main.py`
+7\. `cd wsnn`
 
-7\- Click "Train"
+8\. `python main.py`
+
+0\- Click "Train"
 
 After a really really REALLY long time, the neural network correctly paints the target labels blue (The dots with the black borders). 
 Thus, the neural network has been correctly trained to color the targets on the given XY graph of randomly generated points.
