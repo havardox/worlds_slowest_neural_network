@@ -9,7 +9,7 @@ Side note: please do not use this in production.
 
 (Run the below commands from your project directory)
 
-2\. `git clone https://github.com/havardox/worlds_slowest_neural_network.git
+2\. `git clone https://github.com/havardox/worlds_slowest_neural_network.git`
 
 3\. `python -m venv venv`
 
