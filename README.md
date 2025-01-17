@@ -15,7 +15,7 @@ Side note: please do not use this in production.
 
 &emsp;Windows: `venv\Scripts\activate`
 
-5\. `cd worlds_slowest_neural_network
+5\. `cd worlds_slowest_neural_network`
 
 > Note: Depending on your OS, the Python command may be called py or python3.
 
