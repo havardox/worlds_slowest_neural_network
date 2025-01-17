@@ -17,7 +17,7 @@ Side note: please do not use this in production.
 
 5\. `cd worlds_slowest_neural_network
 
-Depending on your OS, the `python` command may be called `py` or `python3`.
+> Note: Depending on your OS, the Python command may be py or python3.
 
 6\. `python -m pip install .`
 
@@ -27,8 +27,8 @@ Depending on your OS, the `python` command may be called `py` or `python3`.
 
 0\- Click "Train"
 
-After a really really REALLY long time, the neural network correctly paints the target labels blue (The dots with the black borders). 
-Thus, the neural network has been correctly trained to color the targets on the given XY graph of randomly generated points.
+After a really, really, REALLY long time, the neural network will successfully paint the target labels blue (the dots with black borders).
+The network has been correctly trained to color the targets on the given XY graph of randomly generated points.
 
 ## WSNN's official mascot
 
