@@ -17,7 +17,7 @@ Side note: please do not use this in production.
 
 5\. `cd worlds_slowest_neural_network
 
-> Note: Depending on your OS, the Python command may be py or python3.
+> Note: Depending on your OS, the Python command may be called py or python3.
 
 6\. `python -m pip install .`
 
