@@ -17,7 +17,9 @@ Side note: please do not use this in production.
 
 &emsp;Windows: `venv\Scripts\activate`
 
-5\. `python main.py`
+5\. `python -m pip install .`
+
+6\. `python main.py`
 
 ## WSNN's official mascot
 
