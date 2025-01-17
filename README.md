@@ -7,8 +7,6 @@ Side note: please do not use this in production.
 ## How to run
 1\. Install [Python](https://wiki.python.org/moin/BeginnersGuide/Download)
 
-(Run the below commands from your project directory)
-
 2\. `git clone https://github.com/havardox/worlds_slowest_neural_network.git`
 
 3\. `python -m venv venv`
@@ -16,6 +14,8 @@ Side note: please do not use this in production.
 4\. Unix/MacOS: `source venv/bin/activate`
 
 &emsp;Windows: `venv\Scripts\activate`
+
+Depending on your OS, the `python` command may be called `py` or `python3.`
 
 5\. `python -m pip install .`
 
