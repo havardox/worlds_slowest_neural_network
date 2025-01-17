@@ -9,13 +9,13 @@ Side note: please do not use this in production.
 
 2\. `git clone https://github.com/havardox/worlds_slowest_neural_network.git`
 
-3\. `python -m venv venv`
+3\. `cd worlds_slowest_neural_network`
 
-4\. Unix/MacOS: `source venv/bin/activate`
+4\. `python -m venv venv`
+
+5\. Unix/MacOS: `source venv/bin/activate`
 
 &emsp;Windows: `venv\Scripts\activate`
-
-5\. `cd worlds_slowest_neural_network`
 
 Depending on your OS, the `python` command may be called `py` or `python3`.
 
