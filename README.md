@@ -25,7 +25,7 @@ Side note: please do not use this in production.
 
 8\. `python main.py`
 
-0\- Click "Train"
+9\- Click "Train"
 
 After a really, really, REALLY long time, the neural network will successfully paint the target labels blue (the dots with the black borders).
 The network has been correctly trained to color the targets on the given XY graph of randomly generated points.
