@@ -15,7 +15,7 @@ Side note: please do not use this in production.
 
 &emsp;Windows: `venv\Scripts\activate`
 
-Depending on your OS, the `python` command may be called `py` or `python3.`
+Depending on your OS, the `python` command may be called `py` or `python3`.
 
 5\. `python -m pip install .`
 
